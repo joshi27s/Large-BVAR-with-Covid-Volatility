@@ -1,0 +1,32 @@
+Metadata-Version: 2.2
+Name: covbayesvar
+Version: 0.1.7
+Summary: This package has functions to estimate large BVAR models with covid volatility, plot conditional and unconditional forecasts, scenario analyses, and impulse response functions, and joint distribution of forecasts using the methods established in Giannone et al. (2015), Lenza and Primiceri (2021), and Crump et. al (2021).
+Author: Sudiksha Joshi
+Author-email: joshi27s@uw.edu
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: scipy
+Requires-Dist: matplotlib
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
+
+# Large BVAR
+
+A Python package to implement large Bayesian Vector Autoregressive (BVAR) models.
+
+## Installation
+
+You can install the package via pip:
+
+```bash
+pip install covbayesvar

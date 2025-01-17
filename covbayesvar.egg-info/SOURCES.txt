@@ -1,0 +1,10 @@
+README.md
+setup.py
+covbayesvar/__init__.py
+covbayesvar/large_bvar.py
+covbayesvar/unit_tests.py
+covbayesvar.egg-info/PKG-INFO
+covbayesvar.egg-info/SOURCES.txt
+covbayesvar.egg-info/dependency_links.txt
+covbayesvar.egg-info/requires.txt
+covbayesvar.egg-info/top_level.txt
