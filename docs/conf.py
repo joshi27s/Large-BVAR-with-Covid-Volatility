@@ -9,7 +9,7 @@
 project = 'covbayesvar'
 copyright = '2024, Sudiksha Joshi'
 author = 'Sudiksha Joshi'
-release = '0.1.7'
+release = '0.1.2'
 
 # -- Path setup --------------------------------------------------------------
 # Add the project's root directory to sys.path so Sphinx can find your package
