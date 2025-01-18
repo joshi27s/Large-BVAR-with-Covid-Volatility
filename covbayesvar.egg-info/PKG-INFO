@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: covbayesvar
-Version: 0.1.7
+Version: 0.1.8
 Summary: This package has functions to estimate large BVAR models with covid volatility, plot conditional and unconditional forecasts, scenario analyses, and impulse response functions, and joint distribution of forecasts using the methods established in Giannone et al. (2015), Lenza and Primiceri (2021), and Crump et. al (2021).
 Author: Sudiksha Joshi
 Author-email: joshi27s@uw.edu
@@ -20,13 +20,57 @@ Dynamic: requires-dist
 Dynamic: requires-python
 Dynamic: summary
 
-# Large BVAR
+# covbayesvar: A Python Package for Large Bayesian VAR Models with COVID Volatility
 
-A Python package to implement large Bayesian Vector Autoregressive (BVAR) models.
+`covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. It is a robust tool for macroeconomic and financial forecasting, leveraging advanced econometric methods to address the unique challenges posed by extreme observations and structural shifts during the pandemic. 
+
+This package facilitates various tasks, including:
+- **Estimating BVAR Models**: Implementing hierarchical priors to shrink parameters in high-dimensional systems.
+- **Forecasting**: Generating both unconditional (baseline) and conditional forecasts, including scenario analysis and impulse response functions.
+- **Scenario Analysis**: Exploring the effects of hypothetical economic shocks on macroeconomic variables.
+- **Entropic Tilting**: Anchoring forecasts to long-term policy targets, such as inflation or unemployment rates.
+
+The methodology draws from seminal works in the field, including Giannone, Lenza, and Primiceri (2015), Lenza and Primiceri (2021), and Crump et al. (2021).
+
+## Features and Use Cases
+- **Comprehensive Forecasting Tools**: Generate forecasts for large economic systems, perform scenario analysis, and estimate the joint distribution of macroeconomic variables.
+- **Robust Estimation under Uncertainty**: Adjust for the heightened volatility and structural changes caused by the COVID-19 pandemic.
+- **Versatility**: The package can be applied to diverse sets of monthly and quraterly datasets to answer policy-related questions, making it a valuable resource for researchers, policymakers, and financial analysts.
+- **Extensive Documentation**: Includes detailed programming examples, documentation, and Google Colab notebooks to guide users through various use cases.
+
+For a complete overview, refer to the [official documentation](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/).
 
 ## Installation
 
-You can install the package via pip:
+You can install the package directly from PyPI using pip:
 
 ```bash
 pip install covbayesvar
+```
+
+
+## Background and Research
+
+This package addresses the critical need for robust econometric tools during periods of heightened economic uncertainty, such as the COVID-19 pandemic. Traditional econometric models often struggle with extreme observations and structural breaks. By adopting Bayesian methodologies, `covbayesvar` provides a robust framework for:
+
+- Shrinking high-dimensional models with hierarchical priors.
+- Capturing pandemic-driven volatility using scalable and efficient methods.
+- Simulating and visualizing forecasts under various scenarios.
+
+### Applications
+
+Examples of questions this package and Google Colab code examples can answer:
+- Assessing the impact of monetary and fiscal policies.
+- Forecasting inflation, unemployment, and other macroeconomic indicators.
+- Evaluating economic resilience under stress scenarios and extreme uncertainty.
+
+---
+
+## Citation
+
+If you use `covbayesvar` in your research, please cite the following works that inspired its methodology:
+
+- Giannone, D., Lenza, M., & Primiceri, G. (2015). **Prior Selection for Vector Autoregressions**.
+- Lenza, M., & Primiceri, G. (2021). **How to Estimate a VAR after March 2020**.
+- Crump, R. K., Eusepi, S., Giannone, D., et al. (2021). **A Large Bayesian VAR of the United States Economy**.
+

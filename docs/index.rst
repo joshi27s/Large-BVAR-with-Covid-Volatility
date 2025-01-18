@@ -1,4 +1,4 @@
-Welcome to CovBayesVAR's documentation!
+Welcome to covbayesvar's documentation!
 =======================================
 
 .. toctree::
