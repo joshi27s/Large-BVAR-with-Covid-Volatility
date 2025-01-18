@@ -1,0 +1,7 @@
+sphinx>=4.0
+sphinx-rtd-theme
+numpy
+pandas
+scipy
+matplotlib
+seaborn

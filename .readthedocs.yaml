@@ -13,8 +13,8 @@ build:
 # Python dependencies
 python:
   install:
-    - requirements: docs/requirements.txt  # Install Sphinx dependencies from requirements.txt
-    - method: setuptools  # Install your package
+    - requirements: requirements.txt  # Reference the root-level requirements.txt
+    - method: setuptools  # Install your package (if applicable)
 
 # Sphinx configuration
 sphinx:
