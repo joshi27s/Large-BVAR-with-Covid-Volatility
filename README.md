@@ -38,6 +38,8 @@ You can install the package directly from PyPI using pip:
 pip install covbayesvar
 ```
 
+
+
 ### Applications
 
 Examples of questions this package and Google Colab python files can answer:
@@ -46,6 +48,50 @@ Examples of questions this package and Google Colab python files can answer:
 - Evaluating economic resilience under stress scenarios and extreme uncertainty.
 
 ---
+
+## Cloning the Repository
+
+To get started, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility.git
+cd Large-BVAR-with-Covid-Volatility
+```## Installing from Source
+
+If you'd like to install the latest version of the package from the source code, follow these steps:
+
+1. Ensure you have Python 3.8 or higher installed.
+2. Create a virtual environment and activate it:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+3. Install the package and its dependencies:
+```bash
+pip install .
+```
+
+## Requirements
+
+The package requires the following Python libraries:
+
+- `numpy`
+- `pandas`
+- `scipy`
+- `matplotlib`
+- `seaborn`
+- `sphinx`
+- `openpyxl`
+- `plotly`
+
+You can also install all dependencies using the `requirements.txt` file:
+
+```bash
+pip install -r requirements.txt
+```
+
 
 ## How to Execute the Model?
 
