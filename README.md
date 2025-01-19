@@ -3,11 +3,9 @@
 
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/covbayesvar)
 ![PyPI Version](https://img.shields.io/pypi/v/covbayesvar)
-![Build Status](https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility/actions/workflows/python-package.yml/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/large-bvar-with-covid-volatility/badge/?version=latest)](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/joshi27s/Large-BVAR-with-Covid-Volatility/branch/main/graph/badge.svg)](https://codecov.io/gh/joshi27s/Large-BVAR-with-Covid-Volatility)
 ![Project Status](https://img.shields.io/badge/status-active-brightgreen)
-![License](https://img.shields.io/github/license/joshi27s/Large-BVAR-with-Covid-Volatility)
+
 
 
 `covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. 
