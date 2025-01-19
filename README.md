@@ -17,9 +17,10 @@ The methodology draws from seminal works in the field of macroeconometrics, incl
 
 
 For a complete overview, refer to the following
-[Research paper](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
-[Official documentation](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/).
-[Github repository](https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility/tree/main)
+- [Research paper](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
+- [Official documentation](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/large_bvar.html#module-covbayesvar.large_bvar)
+- [Github repository](https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility/tree/main?tab=readme-ov-file)
+- [`covbayesvar` package](https://pypi.org/project/covbayesvar/)
 
 ## Installation
 
@@ -37,8 +38,6 @@ Examples of questions this package and Google Colab python files can answer:
 - Evaluating economic resilience under stress scenarios and extreme uncertainty.
 
 ---
-
-### How to execute the model?
 
 ## How to Execute the Model?
 
