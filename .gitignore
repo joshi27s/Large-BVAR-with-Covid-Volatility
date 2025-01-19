@@ -19,3 +19,15 @@ build/
 
 # macOS system files
 .DS_Store
+
+# Ignore large result files
+scripts/Results/*.pkl
+
+# Ignore plot files and result artifacts
+scripts/Descriptives\ Plots/
+scripts/Entropic\ Tilting\ Plots/
+scripts/MCMC\ Plots/
+
+
+
+
