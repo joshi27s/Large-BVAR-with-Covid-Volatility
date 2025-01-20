@@ -126,8 +126,8 @@ If you use `covbayesvar` in your research, please cite the following works that 
 You can additionally cite the software repository itself:
 
 ```bibtex
-@misc{joshi_2025_covbayesvar_repo,
-  author = {Sudiksha Joshi and contributors},
+@misc{joshi_sudiksha_2025_covbayesvar,
+  author = {Sudiksha Joshi},
   title = {covbayesvar: A Python Package for Large Bayesian VAR Models with COVID Volatility},
   url = {https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility},
   year = {2025}
