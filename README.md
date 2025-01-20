@@ -122,3 +122,20 @@ If you use `covbayesvar` in your research, please cite the following works that 
 - Lenza, M., & Primiceri, G. (2021). **How to Estimate a VAR after March 2020**.
 - Crump, R. K., Eusepi, S., Giannone, D., et al. (2021). **A Large Bayesian VAR of the United States Economy**.
 
+
+You can additionally cite the software repository itself:
+
+```bibtex
+@misc{joshi_2025_covbayesvar_repo,
+  author = {Sudiksha Joshi and contributors},
+  title = {covbayesvar: A Python Package for Large Bayesian VAR Models with COVID Volatility},
+  url = {https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility},
+  year = {2025}
+}
+```
+
+## Contributions
+
+You are welcome to contribute in any capacity to aid in expanding the project from creating an issue, reporting
+a bug, suggesting an improvement, to forking the repository and creating a pull request to the development branch.
+
