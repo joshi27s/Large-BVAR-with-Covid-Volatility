@@ -56,7 +56,8 @@ To get started, clone the repository to your local machine:
 ```bash
 git clone https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility.git
 cd Large-BVAR-with-Covid-Volatility
-```## Installing from Source
+```
+## Installing from Source
 
 If you'd like to install the latest version of the package from the source code, follow these steps:
 
@@ -82,7 +83,6 @@ The package requires the following Python libraries:
 - `scipy`
 - `matplotlib`
 - `seaborn`
-- `sphinx`
 - `openpyxl`
 - `plotly`
 
