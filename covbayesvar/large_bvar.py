@@ -214,6 +214,7 @@ def bvarGLP(y, lags, **kwargs):
 
     # Check if 'pos' is provided and update diagb accordingly
     if pos is not None:
+        pos = [int(p) for p in pos]  # Convert list of strings to integers
         diagb[pos] = 0
 
     # Fill in the diagonal starting from (1, 0)
@@ -277,9 +278,16 @@ def bvarGLP(y, lags, **kwargs):
     x0_elements = [lambda_diff]  # Start with lambda_diff, which is not empty
 
     # Add other elements if they are not empty or None
+    # Add other elements if they are not empty or None
     for element in [inpsi, intheta, inmiu, inalpha]:
-        if element not in (None, [], np.array([])):
+        if isinstance(element, (np.ndarray, list)):  # Check if element is an array or list
+            if isinstance(element, np.ndarray) and element.size > 0:  # Non-empty ndarray
+                x0_elements.append(np.atleast_2d(element))
+            elif isinstance(element, list) and len(element) > 0:  # Non-empty list
+                x0_elements.append(np.atleast_2d(element))
+        elif element is not None:  # Handle other non-None cases if applicable
             x0_elements.append(np.atleast_2d(element))
+
 
     # Concatenate the elements vertically to form the x0 array
     x0 = np.vstack(x0_elements)
@@ -296,12 +304,10 @@ def bvarGLP(y, lags, **kwargs):
     crit = 1e-16
     nit = 1000
 
-    # Prepare the extra arguments for the function (assuming these variables are already defined)
+    # Prepare the extra arguments for the function
     varargin = [y, x, lags, T, n, b, MIN, MAX, SS, Vc, pos, mn, sur, noc, y0, hyperpriors, priorcoef, MCMCMsur,
                 long_run]
 
-    # Call the csminwel function
-    # TODO: H is slighlty different: in python H is 0.037394; in MATLAB H is 0.0391
     fh, xh, gh, H, itct, fcount, retcodeh = csminwel(logMLVAR_formin, x0, H0, None, crit, nit,
                                                      *varargin)
 
@@ -445,9 +451,6 @@ def bvarGLP(y, lags, **kwargs):
         while logMLold == -10e15:
             # Ensure postmode is in the form of a one-dimensional array
             postmode_array = np.array([postmode])
-
-            # TODO: P varies in python slightly as temp is formed from drawing randomly generated variables from the
-            #  multivariate normal distribution
             temp = np.random.multivariate_normal(postmode_array, HH * const ** 2, 1)
             P[0, :] = temp.flatten()
             logMLold, betadrawold, sigmadrawold = logMLVAR_formcmc(P[0, :].T[:, np.newaxis],
@@ -488,8 +491,6 @@ def bvarGLP(y, lags, **kwargs):
                 cov_matrix = eigenvectors @ np.diag(eigenvalues) @ eigenvectors.T
 
             # Draw candidate value
-            # TODO: Note that P matrix composes of randomly generated draws from the multivariate normal distribution,
-            #  so these values will differ slightly from MATLAB's P
             P[i - 1, :] = np.random.multivariate_normal(mean=P[i - 2, :], cov=cov_matrix)
             logMLnew, betadrawnew, sigmadrawnew = logMLVAR_formcmc(P[i - 1, :].reshape(-1, 1),
                                                                    y, x, lags, T, n, b, MIN, MAX, SS, Vc,
@@ -520,8 +521,6 @@ def bvarGLP(y, lags, **kwargs):
                                                                         pos, mn, sur, noc, y0,
                                                                         max(MCMCfcast, MCMCstorecoeff),
                                                                         hyperpriors, priorcoef, MCMCMsur, long_run)
-
-            # print(i,'Old',logMLold,logMLnew)
 
             # stores draws of VAR coefficients if MCMCstorecoeff is on
             if i > N and MCMCstorecoeff == 1:
@@ -628,8 +627,10 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
     y = y[lags:, :]  # Drop the first 'lags' rows
 
     T, n = y.shape  # Update dimensions
-    # Assuming Tcovid is provided as an argument or defined earlier in the function
-    Tcovid -= lags
+    if Tcovid is not None:  # Check if Tcovid is valid
+        Tcovid -= lags  # Perform the subtraction if Tcovid is valid
+    else:
+        Tcovid = None  # Keep Tcovid as None or handle it based on your logic
 
     # MN prior mean
     #########################################################################
@@ -657,25 +658,25 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
 
     # Calculate 'aux' which measure volatility
     # Compute the mean of absolute differences from Tcovid to the end
-
-    # Select the slice from Tcovid-1 to T-1 (inclusive)
-    y_post_Tcovid = y[Tcovid - 1:max(Tcovid + 1, T), :]
-    y_pre_Tcovid = y[Tcovid - 2:max(Tcovid + 1, T) - 1, :]
-
-    # Calculate mean_diff_post_Tcovid
-    mean_diff_post_Tcovid = np.mean(np.abs(y_post_Tcovid - y_pre_Tcovid), axis=1)
-
-    # Compute the mean of mean absolute differences before Tcovid
-    mean_diff_pre_Tcovid = np.mean(
-        np.abs(y[1:Tcovid - 1, :] - y[0:Tcovid - 2, :])
-    )
-
-    # Normalize the first mean by the second mean
-    aux = mean_diff_post_Tcovid / mean_diff_pre_Tcovid
+    if Tcovid is None:
+        # Handle the case where Tcovid is not provided or invalid
+        aux = np.array([])
+    else:
+        # Select the slice from Tcovid-1 to T-1 (inclusive)
+        y_post_Tcovid = y[Tcovid - 1:max(Tcovid + 1, T), :]
+        y_pre_Tcovid = y[Tcovid - 2:max(Tcovid + 1, T) - 1, :]
+        # Calculate mean_diff_post_Tcovid
+        mean_diff_post_Tcovid = np.mean(np.abs(y_post_Tcovid - y_pre_Tcovid), axis=1)
+        # Compute the mean of mean absolute differences before Tcovid
+        mean_diff_pre_Tcovid = np.mean(
+            np.abs(y[1:Tcovid - 1, :] - y[0:Tcovid - 2, :])
+        )
+        # Normalize the first mean by the second mean
+        aux = mean_diff_post_Tcovid / mean_diff_pre_Tcovid
 
     # Check the length of 'aux' and define 'eta0' accordingly
     if aux.size == 0:
-        eta0 = []
+        eta0 = [] # Empty list for volatility hyperparameters
     elif aux.size == 2:
         eta0 = np.append(aux, [aux[0], 0.8])  # volatility hyperparameters
     elif aux.size >= 3:
@@ -688,10 +689,10 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
         Tend = T  # Initialize Tend with the value of T
 
         # Check if Tcovid is not empty and update Tend accordingly
-        if Tcovid:
+        if Tcovid is not None:
             Tend = Tcovid - 1
 
-        # Perform OLS estimation
+        # Perform OLS estimation only if Tend is valid
         ar1 = ols1(y[1:Tend, i], np.column_stack((np.ones((Tend - 1, 1)), y[0:Tend - 1, i])))
 
         # Update SS[i] with the estimated residual variance from the AR(1) model
@@ -756,7 +757,7 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
     crit = 1e-16
     nit = 1000
 
-    # Prepare the extra arguments for the function (assuming these variables are already defined)
+    # Prepare the extra arguments for the function
     varargin = [y, x, lags, T, n, b, MIN, MAX, SS, Vc, pos, mn, sur, noc, y0, hyperpriors, priorcoef, Tcovid]
 
     # Call the csminwel function
@@ -1635,16 +1636,6 @@ def csminwel(fcn: Callable, x0: np.ndarray, H0: np.ndarray,
 
                 # If the gradient is "bad", set the wall1 flag
                 wall1 = badg1  # wall1 is scalar (or 1x1 double)
-                # Create DataFrames from your data
-                df_g1 = pd.DataFrame(g1, columns=['g1'])
-                df_x1 = pd.DataFrame(x1, columns=['x1'])
-                df_f1 = pd.DataFrame([f1], columns=['f1'])  # Assuming f1 is a scalar
-
-                # Save to Excel
-                with pd.ExcelWriter('saved_data.xlsx') as writer:
-                    df_g1.to_excel(writer, sheet_name='g1')
-                    df_x1.to_excel(writer, sheet_name='x1')
-                    df_f1.to_excel(writer, sheet_name='f1')
 
             # Check if we see a wall (special condition), and if the Hessian matrix is not 1D
             if wall1 and len(H.shape) > 1:  # Check special condition and dimension of Hessian
@@ -1671,16 +1662,6 @@ def csminwel(fcn: Callable, x0: np.ndarray, H0: np.ndarray,
                             g2, badg2 = grad(x2, *varargin)
 
                         wall2 = badg2
-
-                        # Save current state for debugging
-                        df_g2 = pd.DataFrame(g2, columns=['g2'])
-                        df_x2 = pd.DataFrame(x2, columns=['x2'])
-                        df_f2 = pd.DataFrame([f2], columns=['f2'])
-
-                        with pd.ExcelWriter('debug_state_g2.xlsx') as writer:
-                            df_g2.to_excel(writer, sheet_name='g2')
-                            df_x2.to_excel(writer, sheet_name='x2')
-                            df_f2.to_excel(writer, sheet_name='f2')
 
                     # Check if we hit the wall again
                     if wall2:
@@ -1712,23 +1693,6 @@ def csminwel(fcn: Callable, x0: np.ndarray, H0: np.ndarray,
                                     g3, badg3 = grad(x3, *varargin)
 
                                 wall3 = badg3
-                                # Save the current state for debugging
-                                # Flatten g3 and x3, and ensure f3 is in a list
-                                f3_list = [f3] * len(g3)
-
-                                # Convert varargin to a string representation or a 1-dimensional array that
-                                # matches the length of g3 and x3
-                                varargin_str = [str(v) for v in varargin] * len(g3)
-
-                                debug_data = {
-                                    'g3': g3.flatten().tolist(),  # Convert to list to ensure 1-dimensional
-                                    'x3': x3.flatten().tolist(),  # Convert to list to ensure 1-dimensional
-                                    'f3': f3_list
-                                }
-
-                                debug_df = pd.DataFrame(debug_data)
-                                debug_df.to_excel(f'debug_state_itct_{itct}.xlsx', index=False)
-
                     else:
                         f3, x3, badg3, retcode3 = f, x, 1, 101
                 else:
@@ -5007,10 +4971,6 @@ def set_priors_covid(priors_params=None, **kwargs):
     # Other options
     if r['setpriors']['hyperpriors'] == 1:
         scalePSI = 0.02 ** 2
-
-        #mode = {'lambda': 0.2, 'miu': 1, 'theta': 1}
-        #sd = {'lambda': 0.4, 'miu': 1, 'theta': 1}
-
         mode = {
             'lambda': priors_params.get('lambda_mode', 0.2),
             'miu': priors_params.get('miu_mode', 1),
@@ -5018,10 +4978,6 @@ def set_priors_covid(priors_params=None, **kwargs):
         }
         sd = {'lambda': priors_params.get('lambda_sd', 0.4), 'miu': priors_params.get('miu_sd', 1),
               'theta': priors_params.get('theta_sd', 1)}
-
-        # Initialize eta for mode and sd with zeros and then set the fourth element
-        #mode['eta'] = np.array([0, 0, 0, 0.8])
-        #sd['eta'] = np.array([0, 0, 0, 0.2])
 
         mode['eta'] = np.array(priors_params.get('eta_mode', [0, 0, 0, 0.8]))
         sd['eta'] = np.array(priors_params.get('eta_sd', [0, 0, 0, 0.2]))
@@ -5042,9 +4998,6 @@ def set_priors_covid(priors_params=None, **kwargs):
         priorcoef = {}
 
     # Bounds for maximization in dictionaries
-
-   # MIN = {'lambda': 0.0001, 'alpha': 0.1, 'theta': 0.0001, 'miu': 0.0001, 'eta': np.array([1, 1, 1, 0.005])}
-    #MAX = {'lambda': 5, 'miu': 50, 'theta': 50, 'alpha': 5, 'eta': np.array([500, 500, 500, 0.995])}
 
     MIN = {
         'lambda': priors_params.get('lambda_min', 0.0001),
