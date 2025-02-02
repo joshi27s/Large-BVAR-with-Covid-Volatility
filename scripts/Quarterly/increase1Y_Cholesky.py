@@ -310,7 +310,6 @@ else:
 
 # Compute the difference between conditional and unconditional forecasts
 dY = PredY_con - PredY_unc
-
 # Calculate quantiles of the difference
 quantiles = [0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65]
 dYQQ = np.quantile(dY, quantiles, axis=2)
@@ -621,4 +620,4 @@ if plot_conditional_forecasts:
         #plt.show()
         fig.savefig(f'{plotDir}/subplot_{Spec["SeriesID"].iloc[iVar]}.png', bbox_inches='tight', dpi=dots_per_inch)
         # Close the figure to free memory
-        #plt.close(fig)
+        plt.close(fig)

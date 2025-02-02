@@ -264,8 +264,6 @@ Shock[0, idxAAA] = 0.25  # 25 bp (basis points) increase from the baseline
 # n is the number of variables and T is the length of the initial data
 Ycond = np.nan * np.ones((len(DateAll), n))
 Ycond[:T, :] = data_transformed
-
-
 # Initialize PredY_con for conditional density forecasts
 PredY_con = np.nan * np.ones((len(DateAll), data_transformed.shape[1], ndraws))
 h_fore_1d = h_fore.reshape(-1).astype(bool)
@@ -628,4 +626,4 @@ if plot_conditional_forecasts:
         #plt.show()
         fig.savefig(f'{plotDir}/subplot_{Spec["SeriesID"].iloc[iVar]}.png', bbox_inches='tight', dpi=dots_per_inch)
         # Close the figure to free memory
-        #plt.close(fig)
+        plt.close(fig)

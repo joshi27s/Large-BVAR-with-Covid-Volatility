@@ -614,4 +614,4 @@ if plot_conditional_forecasts:
         #plt.show()
         fig.savefig(f'{plotDir}/subplot_{Spec["SeriesID"].iloc[iVar]}.png', bbox_inches='tight', dpi=dots_per_inch)
         # Close the figure to free memory
-        #plt.close(fig)
+        plt.close(fig)

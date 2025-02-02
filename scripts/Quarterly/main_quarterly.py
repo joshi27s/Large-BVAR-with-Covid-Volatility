@@ -20,7 +20,6 @@ estimateBVAR = True
 runUNC = True
 runCF = True
 plot_uncondi_forecasts = True
-plot_joint_uncondi_forecasts = True
 plot_scenario_analyses = True
 plot_subplot_scenarios = True
 plot_conditional_forecasts = True
@@ -181,7 +180,6 @@ h_fore = (np.array([0] * len(dates) + [1] * h)).reshape(-1, 1)
 
 # Initialize PredY_unc for unconditional density forecasts
 PredY_unc = np.nan * np.ones((len(DateAll), data_transformed.shape[1], ndraws))
-
 uncondi_forecasts_file_path = f'./Results/Uncondi_Forecasts_{date_str}.pkl'
 
 if runUNC:
@@ -242,7 +240,7 @@ if plot_uncondi_forecasts:
     dPredY_unc = np.nan * np.ones((num_rows, num_variables, ndraws))
     # Compute the 12-month growth rates for the remaining rows
     dPredY_unc[4:, :, :] = PredY_unc[4:, :, :] - PredY_unc[:-4, :, :]
-    QQ = [0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65]  # Quantiles of interest
+    QQ = [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]  # Quantiles of interest
     plot_start = datetime(2019, 12, 1).date()  # The plots start from Jan 1, 2005
     # To calculate the end date for the plot, find the max date in DateAll and add 50 days
     plot_end = DateAll.max() + timedelta(days=50)
@@ -292,78 +290,6 @@ if plot_uncondi_forecasts:
         fig.savefig(f'{plotDir}/fore_{Spec["SeriesID"].iloc[iVar]}.png', bbox_inches='tight', dpi=dots_per_inch)
         # Close the figure to free memory
         plt.close(fig)
-
-############################ Plot joint unconditional forecasts ############################
-if plot_joint_uncondi_forecasts:
-    # Define the jointMarginalCell equivalent in Python using a dictionary
-    joint_marginal_data = {
-        'mnemY1': ['GS1', 'GS10', 'FEDFUNDS', 'FEDFUNDS'],
-        'mnemY2': ['UNRATE', 'UNRATE', 'GS1', 'UNRATE'],
-        'y1lab': ['1-Yr Treasury (%)', '10-Yr Treasury (%)', 'Federal Funds Rate  (%)', 'Federal Funds Rate  (%)'],
-        'y2lab': ['Unemployment Rate (%)', 'Unemployment Rate (%)', '1-Yr Treasury (%)', 'Unemployment Rate (%)'],
-        'titlelab': ['1-Yr Treasury', '10-Yr Treasury', 'Federal Funds Rate', 'Federal Funds Rate'],
-        'outlab': ['GS1 UNRATE', 'GS10 UNRATE', 'FEDFUNDS GS1', 'FERDFUNDS UNRATE'],
-        'tranY1': ['lin', 'lin', 'lin', 'lin'],
-        'tranY2': ['lin', 'lin', 'lin', 'lin']
-    }
-
-    # Convert the dictionary to a DataFrame
-    joint_marginal_df = pd.DataFrame(joint_marginal_data)
-    fore_series = pd.to_datetime(fore)
-    yfore = fore_series.year
-    mfore = fore_series.month
-
-    # Estimate the model until September 1, 2024
-    # Extract dates corresponding to December 2024
-    hVec = fore[mfore == 12]
-    # Line Width for Plotting
-    LW = 1.5
-    plt.close('all')
-
-    # Iterate over the dates in hVec
-    for t in hVec:
-        # Convert t from 'DD-MMM-YYYY' to datetime.date
-        t_datetime = pd.to_datetime(t, format='%d-%b-%Y').date()
-        hRef_indices = np.where(DateAll == t_datetime)[0]
-        hRef = hRef_indices[0]
-
-        # Iterate over the rows in jointMarginalTable
-        for j in range(len(joint_marginal_df)):
-            # Close all existing plots
-            plt.close('all')
-
-            # Set labels
-            y1lab = joint_marginal_df.loc[j, 'y1lab']
-            y2lab = joint_marginal_df.loc[j, 'y2lab']
-            tLab = joint_marginal_df.loc[j, 'titlelab']
-            outLab = joint_marginal_df.loc[j, 'outlab']
-
-            # Set data
-            idxY1 = Spec[Spec['SeriesID'] == joint_marginal_df.loc[j, 'mnemY1']].index[0]
-            idxY2 = Spec[Spec['SeriesID'] == joint_marginal_df.loc[j, 'mnemY2']].index[0]
-
-            if joint_marginal_df.loc[j, 'tranY1'] == 'log':
-                Y1 = dPredY_unc[hRef, idxY1, :].squeeze()
-            else:
-                Y1 = PredY_unc[hRef, idxY1, :].squeeze()
-
-            if joint_marginal_df.loc[j, 'tranY2'] == 'log':
-                Y2 = dPredY_unc[hRef, idxY2, :].squeeze()
-            else:
-                Y2 = PredY_unc[hRef, idxY2, :].squeeze()
-
-            YY = np.column_stack((Y1, Y2))
-
-            # Generate scatterplot of draws, with marginals on the side panels
-            fig, ax = bvar.plot_joint_marginal(YY, None, y1lab, y2lab, vis, LW)
-            t_datetime = pd.to_datetime(t, format='%d-%b-%Y')
-            title_string = f"{t_datetime.strftime('%Y:%m')} | {dates.iloc[-1].strftime('%Y:%m')}"
-            ax.set_title(title_string)
-            plt.tight_layout()
-            #plt.show()
-            filename = f"{plotDir}/{outLab}_{t_datetime.strftime('%Y%m')}_nobin.png"
-            plt.savefig(filename, dpi=dots_per_inch)
-
 
 ############################ Calculate conditional forecasts ############################
 
@@ -516,7 +442,7 @@ if plot_scenario_analyses:
                 'Moody Seasoned Baa Corporate Bond Yield'
 
             ]
-        },
+        }
 
     ]
 
@@ -743,4 +669,4 @@ if plot_conditional_forecasts:
         #plt.show()
         fig.savefig(f'{plotDir}/subplot_{Spec["SeriesID"].iloc[iVar]}.png', bbox_inches='tight', dpi=dots_per_inch)
         # Close the figure to free memory
-        #plt.close(fig)
+        plt.close(fig)

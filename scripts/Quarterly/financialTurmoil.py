@@ -14,7 +14,7 @@ import plot_bvar
 # Configuration settings
 vis = True  # Set to False to hide figures
 estimateBVAR = False
-runUNC = False
+runUNC = True
 runCF = True
 plot_scenario_analyses = True
 plot_subplot_scenarios = True

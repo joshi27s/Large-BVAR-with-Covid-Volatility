@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from numpy.random import gamma
 from numpy.linalg import eigvals, eig, solve
 from scipy import linalg as la

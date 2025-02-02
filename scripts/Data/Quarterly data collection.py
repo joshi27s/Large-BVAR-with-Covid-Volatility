@@ -3,8 +3,7 @@ import pandas as pd
 
 
 # Load the original CSV file
-file_path = ('/Users/sjoshis/Desktop/Fall 2022/ECON527 Macroeconometrics/BVAR of US Economy/Python '
-             'Codes/Data/current_QD.csv')
+file_path = ('/Users/sjoshis/Desktop/covbayesvar/scripts/Data/current_QD.csv')
 df_csv = pd.read_csv(file_path)
 # Remove the row where 'sasdate' equals 'transform'
 df_csv = df_csv[df_csv['sasdate'] != 'transform']

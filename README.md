@@ -21,11 +21,13 @@ This package facilitates various tasks, including:
 - **Extensive Documentation**: Includes detailed programming examples, documentation, and Google Colab notebooks to guide users through various use cases.
 
 
-The methodology draws from seminal works in the field of macroeconometrics, including Giannone, Lenza, and Primiceri (2015), Lenza and Primiceri (2021), and Crump et al. (2021).
+The methodology draws from seminal works in the field of macroeconometrics, 
+including Giannone, Lenza, and Primiceri (2015), Banbura et. al. (2015), 
+Crump et al. (2021), and Lenza and Primiceri (2022).
 
 
 For a complete overview, refer to the following
-- [Research paper](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
+- [Research paper and Google Colab python scripts](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
 - [Official documentation](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/large_bvar.html#module-covbayesvar.large_bvar)
 - [Github repository](https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility/tree/main?tab=readme-ov-file)
 - [`covbayesvar` package](https://pypi.org/project/covbayesvar/)
@@ -49,6 +51,55 @@ Examples of questions this package and Google Colab python files can answer:
 - Examine the presence of structural breaks during and after COVID pandemic
 
 ---
+## Ways to replicate the results of the research paper
+
+To replicate the results presented in the accompanying research paper, you can 
+choose between two primary methods: **running Jupyter notebooks in Google Colab** 
+or **executing Python scripts locally**. 
+Each method has its own advantages and limitations, which are outlined below to 
+help you decide based on your preferences and computational resources.
+
+### **1. Run the Jupyter Notebooks in Google Colab (Not Recommended for higher-frequency data)**
+
+This method involves using pre-configured Jupyter notebooks that are optimized 
+for Google Colab, a cloud-based environment that allows you to run Python code 
+without setting up anything on your local machine.
+
+**Pros:**
+- User-Friendly Interface: don't need to set up an environment or install.
+- Suitable for preliminary analyses or demonstrations.
+- No Local Resource Dependency: Does not consume your local machine’s CPU or RAM.
+- Pre-Configured Environment: Dependencies are often pre-installed or easy to install.
+- Quick Prototyping: Ideal for testing small code snippets or analyzing quarterly-frequency datasets.
+
+**Cons:**
+- Slower Performance: Especially when running the model at the monthly level.
+- Session Time Limits: Colab imposes usage limits, especially for free and Pro accounts.
+- Limited Memory: May lead to out-of-memory errors with large Bayesian monthly VAR models.
+
+**How to Use:**
+- Open the provided Jupyter notebooks in Google Colab.
+- Execute cells sequentially
+---
+
+### **2. Run Python Scripts Locally (Recommended method)**
+
+This method involves cloning the repository to your local machine, 
+setting up a virtual environment, and executing Python scripts found in 
+the `scripts` folder.
+
+**Pros:**
+- Faster Execution: Leverages your local hardware, speeding computations, especially with monthly datasets.
+- Persistent Environment: No risk of session timeouts as with Colab.
+- Easier Debugging: easier to debug, modify code and unit-test functions.
+
+**Cons:**
+- Initial Setup Required: Requires cloning the repository, creating virtual environments, and installing dependencies.
+- Hardware Limitations: Performance depends on your local machine’s CPU, RAM, and GPU capabilities.
+
+**How to Use:**
+- Follow the steps outlined below on how to proceed with running the python scripts locally.
+ 
 
 ## Cloning the Repository
 
@@ -78,7 +129,7 @@ pip install .
 
 ## Requirements
 
-The package requires the following Python libraries:
+The package requires the following Python packages:
 
 - `numpy`
 - `pandas`
@@ -101,8 +152,10 @@ pip install -r requirements.txt
 
 In addition to the Google Colab notebooks, the **`scripts`** folder in the GitHub 
 repository contains Python files to run the model on monthly data in the following order. 
-deeper understanding of the code, refer to the accompanying research paper.
-In particular, section 4, 5 and 6 elaborate the results obtained from the 
+To have a deeper understanding of the code, refer to the accompanying research paper,
+and the official documentation of the functions. The package relies on functions
+stored in the `large_bvar` module that you can find in the `covbayesvar` folder.
+In particular, section 4, 5 and 6 elaborate the method and results obtained from the 
 following scripts
 
 1. **`Descriptives.py`**:
@@ -120,6 +173,13 @@ following scripts
 
 4. **`MCMC_Sims.py`** (optional):
    - Tests the performance of the BVAR model using a simple Monte Carlo simulation.
+   
+```bash
+# example of how to run the Scripts via terminal/command prompt
+python Descriptives.py
+python main.py
+python entropicTilting.py
+```
 
 ### Using quarterly data
 

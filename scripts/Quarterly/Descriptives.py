@@ -110,6 +110,5 @@ fig.update_layout(
 for j_var in range(n):
     fig.update_xaxes(tickformat='%d/%m/%Y', row=(j_var+1)*2, col=1)
 
-
 # Save all subplots to a single HTML file
 fig.write_html(f"{plot_dir}Descriptives.html")
