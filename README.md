@@ -66,16 +66,16 @@ for Google Colab, a cloud-based environment that allows you to run Python code
 without setting up anything on your local machine.
 
 **Pros:**
-- User-Friendly Interface: don't need to set up an environment or install.
+- Don't need to set up an environment or install.
 - Suitable for preliminary analyses or demonstrations.
-- No Local Resource Dependency: Does not consume your local machine’s CPU or RAM.
-- Pre-Configured Environment: Dependencies are often pre-installed or easy to install.
-- Quick Prototyping: Ideal for testing small code snippets or analyzing quarterly-frequency datasets.
+- Does not consume your local machine’s CPU or RAM.
+- Dependencies are often pre-installed or easy to install.
+- Ideal for testing small code snippets or analyzing small-sized datasets.
 
 **Cons:**
-- Slower Performance: Especially when running the model at the monthly level.
-- Session Time Limits: Colab imposes usage limits, especially for free and Pro accounts.
-- Limited Memory: May lead to out-of-memory errors with large Bayesian monthly VAR models.
+- The performance slows considerably, especially when estimating the model at the monthly level.
+- Colab imposes usage limits, especially for free and Pro accounts.
+- ay lead to out-of-memory errors with large Bayesian monthly VAR models.
 
 **How to Use:**
 - Open the provided Jupyter notebooks in Google Colab.
@@ -89,13 +89,13 @@ setting up a virtual environment, and executing Python scripts found in
 the `scripts` folder.
 
 **Pros:**
-- Faster Execution: Leverages your local hardware, speeding computations, especially with monthly datasets.
-- Persistent Environment: No risk of session timeouts as with Colab.
-- Easier Debugging: easier to debug, modify code and unit-test functions.
+- Leverages your local hardware, speeding computations, especially with monthly datasets.
+- Sessions don't timeout unlike seen in the free version of Colab.
+- Easier to debug, modify code and unit-test functions.
 
 **Cons:**
-- Initial Setup Required: Requires cloning the repository, creating virtual environments, and installing dependencies.
-- Hardware Limitations: Performance depends on your local machine’s CPU, RAM, and GPU capabilities.
+- Requires cloning the repository, creating virtual environments, and installing dependencies.
+- Performance depends on your local machine’s CPU, RAM, and GPU capabilities.
 
 **How to Use:**
 - Follow the steps outlined below on how to proceed with running the python scripts locally.
