@@ -27,7 +27,7 @@ Crump et al. (2021), and Lenza and Primiceri (2022).
 
 
 For a complete overview, refer to the following
-- [Research paper and Google Colab python scripts](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
+- [Research paper and Google Colab jupyter notebook files](https://drive.google.com/drive/folders/1tKcULsaeg_ch-nMa-kWJ9D2VPIsYazwV)
 - [Official documentation](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/large_bvar.html#module-covbayesvar.large_bvar)
 - [Github repository](https://github.com/joshi27s/Large-BVAR-with-Covid-Volatility/tree/main?tab=readme-ov-file)
 - [`covbayesvar` package](https://pypi.org/project/covbayesvar/)
@@ -175,7 +175,7 @@ following scripts
    - Tests the performance of the BVAR model using a simple Monte Carlo simulation.
    
 ```bash
-# example of how to run the Scripts via terminal/command prompt
+# example of how to run the scripts via terminal/command prompt
 python Descriptives.py
 python main.py
 python entropicTilting.py
