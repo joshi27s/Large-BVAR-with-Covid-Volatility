@@ -220,6 +220,9 @@ If you use `covbayesvar` in your work, please cite the following research papers
 
 4. Lenza, M., & Primiceri, G. (2022). How to estimate a VAR after March 2020. *Journal of Applied Econometrics, 37*(4), 688–699.https://doi.org/10.1002/jae.2895
 
+5. Clements, M. P., & Galvao, A. B. (2024). Macroeconomic forecasting using BVARs. In *Handbook of Research Methods and Applications on Macroeconomic Forecasting* (Chapter 2, pp. 15–42). Cheltenham, UK: Edward Elgar Publishing. https://pureportal.strath.ac.uk/en/publications/macroeconomic-forecasting-using-bvars
+
+
 
 You can additionally cite the software repository itself:
 
