@@ -70,12 +70,13 @@ without setting up anything on your local machine.
 - Suitable for preliminary analyses or demonstrations.
 - Does not consume your local machine’s CPU or RAM.
 - Dependencies are often pre-installed or easy to install.
-- Ideal for testing small code snippets or analyzing small-sized datasets.
+- Ideal for testing small code snippets or analyzing small-sized datasets with fewer draws defined in the `Ndraws` parameter.
 
 **Cons:**
 - The performance slows considerably, especially when estimating the model at the monthly level.
 - Colab imposes usage limits, especially for free and Pro accounts.
-- ay lead to out-of-memory errors with large Bayesian monthly VAR models.
+- May generate out-of-memory errors with large Bayesian monthly VAR models if 
+the number of Monte Carlo simulation draws `Ndraws` are extensive.
 
 **How to Use:**
 - Open the provided Jupyter notebooks in Google Colab.
