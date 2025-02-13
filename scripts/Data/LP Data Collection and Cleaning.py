@@ -2,9 +2,9 @@ from fredapi import Fred
 from datetime import datetime
 from pandas_datareader import DataReader
 
-fred = Fred(api_key='7e70df3f020852ea824275ce0fea70a0')
+fred = Fred(api_key='write_your_api_key_here')
 file_name = 'LP_data.xlsx'
-file_path = ('/Users/sjoshis/Desktop/Fall 2022/ECON527 Macroeconometrics/BVAR of US Economy/Python Codes/Data')
+file_path = '/Users/sjoshis/Desktop/covbayesvar/scripts/Data/'
 full_path = f"{file_path}/{file_name}"
 
 # monthly data from FRED-MD
