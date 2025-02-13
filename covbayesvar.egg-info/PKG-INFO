@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: covbayesvar
-Version: 0.2.2
+Version: 0.0.1
 Summary: This package has functions to estimate large BVAR models with COVID volatility, plot conditional and unconditional forecasts, scenario analyses, generalized impulse response functions, joint distribution of forecasts and visualize structural breaks using the methods established in Giannone et al. (2015), Banbura et. al (2015), Lenza and Primiceri (2022), and Crump et. al (2021).
 Author: Sudiksha Joshi
 Author-email: joshi27s@uw.edu
@@ -36,7 +36,7 @@ the unique challenges posed by extreme observations and structural shifts during
 
 This package facilitates various tasks, including:
 - **Estimating BVAR Models with COVID volatility**: Implements hierarchical priors to shrink parameters in high-dimensional systems and adjust for the heightened volatility and structural changes caused by the COVID-19 pandemic.
-- **Forecasting**: Generates both unconditional (baseline), impulse response functions, and joint distribution of variables at any forecast horizon.
+- **Forecasting**: Generates both unconditional (baseline), generalized impulse response functions, and joint distribution of variables at any forecast horizon.
 - **Scenario Analysis**: Explores the effects of hypothetical economic shocks on macroeconomic variables by constructing forecasts conditional on shocks and scenario analyses.
 - **Entropic Tilting**: Anchoring forecasts to long-term policy targets, such as inflation or unemployment rates.
 - **Versatility**: The package can be applied to diverse sets of monthly and quarterly datasets to answer policy-related questions, making it a valuable resource for researchers, policymakers, and financial analysts.
@@ -88,16 +88,17 @@ for Google Colab, a cloud-based environment that allows you to run Python code
 without setting up anything on your local machine.
 
 **Pros:**
-- User-Friendly Interface: don't need to set up an environment or install.
+- Don't need to set up an environment or install.
 - Suitable for preliminary analyses or demonstrations.
-- No Local Resource Dependency: Does not consume your local machine’s CPU or RAM.
-- Pre-Configured Environment: Dependencies are often pre-installed or easy to install.
-- Quick Prototyping: Ideal for testing small code snippets or analyzing quarterly-frequency datasets.
+- Does not consume your local machine’s CPU or RAM.
+- Dependencies are often pre-installed or easy to install.
+- Ideal for testing small code snippets or analyzing small-sized datasets with fewer draws defined in the `Ndraws` parameter.
 
 **Cons:**
-- Slower Performance: Especially when running the model at the monthly level.
-- Session Time Limits: Colab imposes usage limits, especially for free and Pro accounts.
-- Limited Memory: May lead to out-of-memory errors with large Bayesian monthly VAR models.
+- The performance slows considerably, especially when estimating the model at the monthly level.
+- Colab imposes usage limits, especially for free and Pro accounts.
+- May generate out-of-memory errors with large Bayesian monthly VAR models if 
+the number of Monte Carlo simulation draws `Ndraws` are extensive.
 
 **How to Use:**
 - Open the provided Jupyter notebooks in Google Colab.
@@ -111,13 +112,13 @@ setting up a virtual environment, and executing Python scripts found in
 the `scripts` folder.
 
 **Pros:**
-- Faster Execution: Leverages your local hardware, speeding computations, especially with monthly datasets.
-- Persistent Environment: No risk of session timeouts as with Colab.
-- Easier Debugging: easier to debug, modify code and unit-test functions.
+- Leverages your local hardware, speeding computations, especially with monthly datasets.
+- Sessions don't timeout unlike seen in the free version of Colab.
+- Easier to debug, modify code and unit-test functions.
 
 **Cons:**
-- Initial Setup Required: Requires cloning the repository, creating virtual environments, and installing dependencies.
-- Hardware Limitations: Performance depends on your local machine’s CPU, RAM, and GPU capabilities.
+- Requires cloning the repository, creating virtual environments, and installing dependencies.
+- Performance depends on your local machine’s CPU, and RAM.
 
 **How to Use:**
 - Follow the steps outlined below on how to proceed with running the python scripts locally.
@@ -242,6 +243,9 @@ If you use `covbayesvar` in your work, please cite the following research papers
 
 4. Lenza, M., & Primiceri, G. (2022). How to estimate a VAR after March 2020. *Journal of Applied Econometrics, 37*(4), 688–699.https://doi.org/10.1002/jae.2895
 
+5. Clements, M. P., & Galvao, A. B. (2024). Macroeconomic forecasting using BVARs. In *Handbook of Research Methods and Applications on Macroeconomic Forecasting* (Chapter 2, pp. 15–42). Cheltenham, UK: Edward Elgar Publishing. https://pureportal.strath.ac.uk/en/publications/macroeconomic-forecasting-using-bvars
+
+
 
 You can additionally cite the software repository itself:
 
@@ -259,3 +263,11 @@ You can additionally cite the software repository itself:
 You are welcome to contribute in any capacity to aid in expanding the project from creating an issue, reporting
 a bug, suggesting an improvement, to forking the repository and creating a pull request to the development branch.
 
+
+## Independence Statement
+
+This package, accompanying research paper, codes and supplementary materials are in no way affiliated with, endorsed from 
+or sponsored by Amazon.com, its subsidiaries or its employees. I independently wrote the functions of the package
+for research purposes prior to joining Amazon.com. This package contains no proprietary information and all the 
+functions are one-to-one mapping of the publicly-available MATLAB codes written before my employment at Amazon. 
+I am solely responsible for any omissions or errors. 

@@ -82,9 +82,6 @@ def bfgsi(H0, dg, dx):
         print(f"|H*dg| = {np.dot(Hdg.T, Hdg)}")
         H = H0
 
-    # Save the updated inverse Hessian to a file
-    np.savetxt("H.dat", H)
-
     return H
 
 
@@ -733,7 +730,9 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
         MIN_eta_transposed = MIN['eta'].reshape(-1, 1)
 
         # Perform the element-wise operation
-        ineta = -np.log((MAX_eta_transposed - eta0) / (eta0 - MIN_eta_transposed))
+        ratio = (MAX_eta_transposed - eta0) / (eta0 - MIN_eta_transposed)
+        ratio = np.where(ratio <= 0, 1e-8, ratio)  # Replace negative/zero values
+        ineta = -np.log(ratio)
         inHeta = (1 / (MAX_eta_transposed - eta0) + 1 / (eta0 - MIN_eta_transposed)) ** 2 * (abs(eta0) / 1) ** 2
     else:
         ineta = None
@@ -852,7 +851,7 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
 
         # Recovering the posterior mode
         if Tcovid is not None:
-            modeeta = r['postmax']['eta']  # Assuming modeeta is 4x1
+            modeeta = r['postmax']['eta']
         else:
             modeeta = None
 
@@ -1147,7 +1146,7 @@ def bvarIrfs(beta, sigma, nshock, hmax):
     lags = int((k - 1) / n)
 
     # IRFs at the posterior mode
-    cholVCM = np.linalg.cholesky(sigma).T
+    cholVCM = np.linalg.cholesky(sigma)
     Y = np.zeros((lags + hmax, n))
     _in = lags
     vecshock = np.zeros((n, 1))
@@ -1161,6 +1160,7 @@ def bvarIrfs(beta, sigma, nshock, hmax):
     irf = Y[_in:, :]
 
     return irf
+
 
 
 def check_params(par):
@@ -2382,7 +2382,8 @@ def disturbance_smoother_var(y, c, Z, G, C, B, H, s00, P00, T, n, ns, ne, SS):
             SHATplus[:, t] = shat.squeeze()
             SIGplus[:, :, t] = sig
             Vplus[ind[t, :], t] = v.squeeze()
-            Kplus[:, ind[t, :], t] = k.squeeze()
+            #Kplus[:, ind[t, :], t] = k.squeeze()
+            Kplus[:, ind[t, :], t] = k.reshape((k.shape[0], -1))
             HINVplus[:, :, t][np.ix_(ind[t, :], ind[t, :])] = hinv
 
         # Disturbance smoother
@@ -2391,18 +2392,22 @@ def disturbance_smoother_var(y, c, Z, G, C, B, H, s00, P00, T, n, ns, ne, SS):
 
         for t in range(T - 1, -1, -1):
             Ht = H[:, :, t].squeeze()
-            Zt = Z[ind[t, :], :, t].squeeze()
+            Zt = Z[ind[t, :], :, t].squeeze().reshape(-1, 1)
             HINVplust = HINVplus[:, :, t][np.ix_(ind[t, :], ind[t, :])]
             Vplust = Vplus[ind[t, :], t].reshape(-1, 1)
 
-            term1 = Ht.T @ Zt.T @ HINVplust @ Vplust
-            term2 = Ht.T @ (np.eye(ns) - Kplus[:, ind[t, :], t] @ Zt).T @ r.reshape(-1, 1)
+            term1 = Ht.T @ (Zt @ (HINVplust @ Vplust))
+            term2 = Ht.T @ (np.eye(ns) - Kplus[:, ind[t, :], t] @ Zt.T) @ r.reshape(-1, 1)
             epshatplus[:, t] = (term1 + term2).squeeze()
 
             # Calculate r
-            term1 = B.T @ Zt.T @ HINVplust @ Vplust
-            term2 = B.T @ (np.eye(ns) - Kplus[:, ind[t, :], t] @ Zt).T @ r.reshape(-1, 1)
-            r = (term1 + term2).reshape(-1, 1)  # Ensure r is a column vector
+            Zt = Zt.reshape(-1, 1) if Zt.ndim == 1 else Zt
+            r = r.reshape(-1, 1) if r.ndim == 1 else r
+            # Correct matrix multiplications
+            term1 = B.T @ Zt @ HINVplust @ Vplust
+            term2 = B.T @ (np.eye(ns) - Kplus[:, ind[t, :], t] @ Zt.T) @ r
+            # Ensure r is a column vector
+            r = (term1 + term2).reshape(-1, 1)
 
         epsdraw = epshat + epsplus - epshatplus
 
@@ -2563,6 +2568,57 @@ def form_companion_matrices(betadraw, G, n, lags, TTfcst):
     varT = np.vstack([B[1:, :].T, np.hstack([np.eye(n * (lags - 1)), np.zeros((n * (lags - 1), n))])])
     varH = np.zeros((n * lags, n, TTfcst))
     varH[:n, :, :] = np.repeat(G[:, :, np.newaxis], TTfcst, axis=2)
+
+    return varc, varZ, varG, varC, varT, varH
+
+
+def form_companion_matrices_covid(betadraw, G, etapar, tstar, n, lags, TTfcst):
+    """
+    Forms the matrices of the VAR companion form with COVID-related adjustments.
+
+    Args:
+        betadraw (numpy.ndarray): Beta coefficients for the VAR model. Shape should be (1 + n * lags, n).
+        G (numpy.ndarray): Matrix G in the state equation. Shape should be (n, n).
+        etapar (numpy.ndarray): Array containing the parameters for COVID adjustments. Shape should be (4,).
+        tstar (int): The starting point of COVID effects in the forecast horizon.
+        n (int): The number of variables in the VAR model.
+        lags (int): The number of lags in the VAR model.
+        TTfcst (int): The forecast horizon.
+
+    Returns:
+        tuple: Tuple containing:
+            - varc (numpy.ndarray): Vector of zeros of shape (n, TTfcst).
+            - varZ (numpy.ndarray): 3D array with the Z matrix replicated TTfcst times. Shape is (n, n*lags, TTfcst).
+            - varG (numpy.ndarray): 3D array of zeros of shape (n, n, TTfcst).
+            - varC (numpy.ndarray): Vector containing the first n elements of betadraw. Shape is (n*lags, ).
+            - varT (numpy.ndarray): State transition matrix. Shape is (n*lags, n*lags).
+            - varH (numpy.ndarray): 3D array for the H matrix with COVID-related adjustments. Shape is (n*lags, n, TTfcst).
+    """
+    # Matrices of observation equation
+    varc = np.zeros((n, TTfcst))
+    varZ = np.zeros((n, n * lags))
+    varZ[:, :n] = np.eye(n)
+    varZ = np.repeat(varZ[:, :, np.newaxis], TTfcst, axis=2)
+    varG = np.repeat(np.zeros((n, n))[:, :, np.newaxis], TTfcst, axis=2)
+
+    # Matrices of state equation
+    B = betadraw
+    varC = np.zeros((n * lags, 1))
+    varC[:n, 0] = B[0, :].T
+    varT = np.vstack([B[1:, :].T, np.hstack([np.eye(n * (lags - 1)), np.zeros((n * (lags - 1), n))])])
+    varH = np.zeros((n * lags, n, TTfcst))
+
+    for t in range(TTfcst):
+        if t < tstar:
+            varH[:n, :, t] = G
+        elif t == tstar:
+            varH[:n, :, t] = G * etapar[0]
+        elif t == tstar + 1:
+            varH[:n, :, t] = G * etapar[1]
+        elif t == tstar + 2:
+            varH[:n, :, t] = G * etapar[2]
+        elif t > tstar + 2:
+            varH[:n, :, t] = G * (1 + (etapar[2] - 1) * etapar[3] ** (t - tstar - 2))
 
     return varc, varZ, varG, varC, varT, varH
 
@@ -5389,6 +5445,27 @@ def vec2mat(vec, n, m):
         mat = mat.T
 
     return mat
+
+
+def verify_bvar_results(bvar_results):
+    """
+    Check if the first beta and sigma matrices are all zeros.
+    If so, replace them with the second beta and sigma matrices.
+
+    Args:
+        bvar_results (dict): The results from the BVAR estimation.
+
+    Returns:
+        dict: The corrected bvar_results.
+    """
+    beta = bvar_results['mcmc']['beta']
+    sigma = bvar_results['mcmc']['sigma']
+
+    if np.all(beta[:, :, 0] == 0) and np.all(sigma[:, :, 0] == 0):
+        beta[:, :, 0] = beta[:, :, 1]
+        sigma[:, :, 0] = sigma[:, :, 1]
+
+    return bvar_results
 
 
 def write_tex_sidewaystable(fid, header, style, table_body, above_tabular, below_tabular=None):

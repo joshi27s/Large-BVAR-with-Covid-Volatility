@@ -14,7 +14,7 @@ the unique challenges posed by extreme observations and structural shifts during
 
 This package facilitates various tasks, including:
 - **Estimating BVAR Models with COVID volatility**: Implements hierarchical priors to shrink parameters in high-dimensional systems and adjust for the heightened volatility and structural changes caused by the COVID-19 pandemic.
-- **Forecasting**: Generates both unconditional (baseline), impulse response functions, and joint distribution of variables at any forecast horizon.
+- **Forecasting**: Generates both unconditional (baseline), generalized impulse response functions, and joint distribution of variables at any forecast horizon.
 - **Scenario Analysis**: Explores the effects of hypothetical economic shocks on macroeconomic variables by constructing forecasts conditional on shocks and scenario analyses.
 - **Entropic Tilting**: Anchoring forecasts to long-term policy targets, such as inflation or unemployment rates.
 - **Versatility**: The package can be applied to diverse sets of monthly and quarterly datasets to answer policy-related questions, making it a valuable resource for researchers, policymakers, and financial analysts.
@@ -96,7 +96,7 @@ the `scripts` folder.
 
 **Cons:**
 - Requires cloning the repository, creating virtual environments, and installing dependencies.
-- Performance depends on your local machine’s CPU, RAM, and GPU capabilities.
+- Performance depends on your local machine’s CPU, and RAM.
 
 **How to Use:**
 - Follow the steps outlined below on how to proceed with running the python scripts locally.
@@ -241,3 +241,11 @@ You can additionally cite the software repository itself:
 You are welcome to contribute in any capacity to aid in expanding the project from creating an issue, reporting
 a bug, suggesting an improvement, to forking the repository and creating a pull request to the development branch.
 
+
+## Independence Statement
+
+This package, accompanying research paper, codes and supplementary materials are in no way affiliated with, endorsed from 
+or sponsored by Amazon.com, its subsidiaries or its employees. I independently wrote the functions of the package
+for research purposes prior to joining Amazon.com. This package contains no proprietary information and all the 
+functions are one-to-one mapping of the publicly-available MATLAB codes written before my employment at Amazon. 
+I am solely responsible for any omissions or errors. 
