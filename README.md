@@ -7,7 +7,6 @@
 ![Project Status](https://img.shields.io/badge/status-active-brightgreen)
 
 
-
 `covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. 
 It is a tool to forecast monthly and quarterly macroeconomic and financial data, leveraging advanced econometric methods to address 
 the unique challenges posed by extreme observations and structural shifts during the pandemic. 
@@ -17,6 +16,7 @@ This package facilitates various tasks, including:
 - **Forecasting**: Generates both unconditional (baseline), generalized impulse response functions, and joint distribution of variables at any forecast horizon.
 - **Scenario Analysis**: Explores the effects of hypothetical economic shocks on macroeconomic variables by constructing forecasts conditional on shocks and scenario analyses.
 - **Entropic Tilting**: Anchoring forecasts to long-term policy targets, such as inflation or unemployment rates.
+- **Identification of Shocks**:: Generates impulse responses functions after identifying shocks using Cholesky decomposition where variables are ordered in a pre-defined way
 - **Versatility**: The package can be applied to diverse sets of monthly and quarterly datasets to answer policy-related questions, making it a valuable resource for researchers, policymakers, and financial analysts.
 - **Extensive Documentation**: Includes detailed programming examples, documentation, and Google Colab notebooks to guide users through various use cases.
 
@@ -156,7 +156,7 @@ repository contains Python files to run the model on monthly data in the followi
 To have a deeper understanding of the code, refer to the accompanying research paper,
 and the official documentation of the functions. The package relies on functions
 stored in the `large_bvar` module that you can find in the `covbayesvar` folder.
-In particular, section 4, 5 and 6 elaborate the method and results obtained from the 
+In particular, section 4, and 5 elaborate the method and results obtained from the 
 following scripts
 
 1. **`Descriptives.py`**:
@@ -185,7 +185,7 @@ python entropicTilting.py
 ### Using quarterly data
 
 Navigate to the **`scripts/Quarterly`** folder and run the
-following scripts that contain examples and results described in section 7 of
+following scripts that contain examples and results described in section 6 of
 the research paper:
 
 1. **`Descriptives.py`**
@@ -208,6 +208,23 @@ the research paper:
 
 10. **`increaseOilPrice_unrestricted.py`**
 
+
+### Replicating figures 2,3 and 4 from Lenza and Primiceri (2022): How to Estimate a VAR after March 2020
+
+Navigate to the **`scripts/LP 2021`** folder and run the
+following scripts that contain examples and results described in section 7:
+
+1. **`Baseline_May2021.py`**
+
+2. **`Baseline_June2020.py`**
+
+3. **`CV_Feb2020_June2020.py`**
+
+4. **`CV_Feb2020_May2020.py`**
+
+5. **`CV_May2021.py`**
+
+6. **`generate_figures.py`**
 
 ## Citation
 
@@ -247,5 +264,5 @@ a bug, suggesting an improvement, to forking the repository and creating a pull 
 This package, accompanying research paper, codes and supplementary materials are in no way affiliated with, endorsed from 
 or sponsored by Amazon.com, its subsidiaries or its employees. I independently wrote the functions of the package
 for research purposes prior to joining Amazon.com. This package contains no proprietary information and all the 
-functions are one-to-one mapping of the publicly-available MATLAB codes written before my employment at Amazon. 
+functions are mapped one-to-one with the publicly-available MATLAB codes that I had written before my internship at Amazon. 
 I am solely responsible for any omissions or errors. 

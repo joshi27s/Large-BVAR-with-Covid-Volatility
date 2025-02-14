@@ -53,8 +53,8 @@ if plot_posterior_distributions:
     fig = plt.figure(1, figsize=(10, 7))
     # Plot datasets
     plot_lp.plot_histograms(cv_feb2020_may2021, ColorBase, 'constant volatility - sample ends in 2020:2')
-    plot_lp.plot_histograms(cv_may2021, ColorGrey, 'constant volatility - sample ends in 2024:12')
-    plot_lp.plot_histograms(baseline_may2021, ColorCovid, 'Covid volatility - sample ends in 2024:12')
+    plot_lp.plot_histograms(cv_may2021, ColorGrey, 'constant volatility - sample ends in 2021:5')
+    plot_lp.plot_histograms(baseline_may2021, ColorCovid, 'Covid volatility - sample ends in 2021:5')
     # Add legend in the first subplot
     plt.subplot(3, 2, (1, 2))
     plt.legend()
@@ -128,7 +128,7 @@ if plot_impulse_responses:
         'Covid volatility: 68-percent credible regions',
         'Covid volatility: 95-percent credible regions',
         'constant volatility - sample ends in 2020:2: posterior medians',
-        'constant volatility - sample ends in 2024:12: posterior medians'
+        'constant volatility - sample ends in 2021:5: posterior medians'
     ], loc='center',
      fontsize=14,  # Larger font size
      frameon=True,  # Add a box around the legend
@@ -244,7 +244,7 @@ if plot_conditional_forecasts_fig4:
 
     #### === Figure 41: Baseline_May2021 === ####
     fig1, axs1 = plt.subplots(7, 1, figsize=(5, 12))
-    fig1.suptitle('Covid volatility - est. sample ends in 2024:12', fontsize=12, fontweight='bold', color=ColorCovid)
+    fig1.suptitle('Covid volatility - est. sample ends in 2021:5', fontsize=12, fontweight='bold', color=ColorCovid)
 
     for ii in range(n):
         ax = axs1[ii]  # Assign correct subplot
