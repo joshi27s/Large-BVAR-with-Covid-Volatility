@@ -63,7 +63,6 @@ Ylog_df = 100 * np.log(Ylev)
 Ylog = Ylog_df.to_numpy()
 Time = data['DATE'].iloc[T0:]
 T, n = Ylog.shape
-
 np.random.seed(10)            # random generator seed
 
 

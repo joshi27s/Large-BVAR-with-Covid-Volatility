@@ -7,7 +7,6 @@ import numpy as np
 # Define the results folder
 results_folder = 'results'
 plot_impulse_responses = True
-plot_posterior_distributions = True
 plot_conditional_forecasts_fig3 = True
 plot_conditional_forecasts_fig4 = True
 plt.ion()  # Turn on interactive mode to view the matplotlib figures while debugging
@@ -46,21 +45,6 @@ x_ticks = [2019 + 0.5 / 12, 2020 + 0.5 / 12, 2021 + 0.5 / 12, 2022 + 0.5 / 12]
 x_tick_labels = ['Jan 2019', 'Jan 2020', 'Jan 2021', 'Jan 2022']
 start_end_dates_xlim = [2019 + 0.5 / 12, 2022 + 5.5 / 12]
 fig3_plot_range = np.arange(2020 + 6.5/12, 2021 + 4.5/12 + 1/12, 1/12)
-
-
-if plot_posterior_distributions:
-    # Create figure
-    fig = plt.figure(1, figsize=(10, 7))
-    # Plot datasets
-    plot_lp.plot_histograms(cv_feb2020_may2021, ColorBase, 'constant volatility - sample ends in 2020:2')
-    plot_lp.plot_histograms(cv_may2021, ColorGrey, 'constant volatility - sample ends in 2021:5')
-    plot_lp.plot_histograms(baseline_may2021, ColorCovid, 'Covid volatility - sample ends in 2021:5')
-    # Add legend in the first subplot
-    plt.subplot(3, 2, (1, 2))
-    plt.legend()
-    plt.tight_layout()
-    plt.savefig(f"{results_folder}/fig1_posterior_distributions_{may2021_vintage_date}.png", dpi=600)
-    #plt.show()
 
 
 if plot_impulse_responses:

@@ -261,7 +261,7 @@ a bug, suggesting an improvement, to forking the repository and creating a pull 
 
 ## Independence Statement
 
-This package, accompanying research paper, codes and supplementary materials are in no way affiliated with, endorsed from 
+This package, accompanying research paper, codes and supplementary materials are not affiliated with, endorsed from 
 or sponsored by Amazon.com, its subsidiaries or its employees. I independently wrote the functions of the package
 for research purposes prior to joining Amazon.com. This package contains no proprietary information and all the 
 functions are mapped one-to-one with the publicly-available MATLAB codes that I had written before my internship at Amazon. 
