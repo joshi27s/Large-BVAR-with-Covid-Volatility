@@ -1,15 +1,11 @@
 # covbayesvar: A Python Package for Large Bayesian VAR Models with COVID Volatility
 
 
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/covbayesvar)
-![PyPI Version](https://img.shields.io/pypi/v/covbayesvar)
-[![Documentation Status](https://readthedocs.org/projects/large-bvar-with-covid-volatility/badge/?version=latest)](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/?badge=latest)
-![Project Status](https://img.shields.io/badge/status-active-brightgreen)
-
-
 `covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. 
 It is a tool to forecast monthly and quarterly macroeconomic and financial data, leveraging advanced econometric methods to address 
 the unique challenges posed by extreme observations and structural shifts during the pandemic. 
+The package contains python functions which are translated one-to-one with the MATLAB
+counterparts, where they were originally written in. 
 
 This package facilitates various tasks, including:
 - **Estimating BVAR Models with COVID volatility**: Implements hierarchical priors to shrink parameters in high-dimensional systems and adjust for the heightened volatility and structural changes caused by the COVID-19 pandemic.
@@ -261,8 +257,9 @@ a bug, suggesting an improvement, to forking the repository and creating a pull 
 
 ## Independence Statement
 
-This package, accompanying research paper, codes and supplementary materials are not affiliated with, endorsed from 
-or sponsored by Amazon.com, its subsidiaries or its employees. I independently wrote the functions of the package
-for research purposes prior to joining Amazon.com. This package contains no proprietary information and all the 
-functions are mapped one-to-one with the publicly-available MATLAB codes that I had written before my internship at Amazon. 
-I am solely responsible for any omissions or errors. 
+This package, accompanying research paper, codes and supplementary materials are
+not affiliated with, endorsed from or sponsored by Amazon.com, its subsidiaries 
+or its employees. I independently wrote the functions of the package for 
+research purposes before joining Amazon.com. Prior to my internship at Amazon,
+I had mapped the python functions one-to-one with the publicly-available MATLAB
+functions. I am solely responsible for any omissions or errors. 
