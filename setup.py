@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="covbayesvar",
-    version="0.0.2",
+    version="0.0.3",
     description="This package has functions to estimate large BVAR models with COVID volatility, plot conditional and "
                 "unconditional forecasts, scenario analyses, generalized impulse response functions, joint distribution of "
                 "forecasts and visualize structural breaks using the methods established in Giannone et al. (2015), "

@@ -1,6 +1,12 @@
 # covbayesvar: A Python Package for Large Bayesian VAR Models with COVID Volatility
 
 
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/covbayesvar)
+![PyPI Version](https://img.shields.io/pypi/v/covbayesvar)
+[![Documentation Status](https://readthedocs.org/projects/large-bvar-with-covid-volatility/badge/?version=latest)](https://large-bvar-with-covid-volatility.readthedocs.io/en/latest/?badge=latest)
+![Project Status](https://img.shields.io/badge/status-active-brightgreen)
+
+
 `covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. 
 It is a tool to forecast monthly and quarterly macroeconomic and financial data, leveraging advanced econometric methods to address 
 the unique challenges posed by extreme observations and structural shifts during the pandemic. 
