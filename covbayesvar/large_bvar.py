@@ -1109,9 +1109,9 @@ def bvarGLP_covid(y, lags, priors_params=None, **kwargs):
     return r
 
 
-def bvarIrfs(beta, sigma, nshock, hmax):
+def bvarIrfs(beta, sigma, nshock, hmax, structural=False):
     """
-   Computes Impulse Response Functions (IRFs) using Cholesky ordering.
+   Computes structural or reduced form Impulse Response Functions (IRFs) using Cholesky ordering.
 
    This function calculates IRFs up to a specified horizon based on the
    provided VAR model coefficients and covariance matrix of the error terms.
@@ -1127,6 +1127,7 @@ def bvarIrfs(beta, sigma, nshock, hmax):
        nshock (int): Position of the variable to which the shock is applied.
            The position corresponds to the column number in 'beta'.
        hmax (int): Maximum horizon for the impulse response.
+       structural (bool, optional): If True, returns structural IRFs. Default is False.
 
    Returns:
        numpy.ndarray: Computed impulse response functions. Size: [hmax, n],
@@ -1158,6 +1159,9 @@ def bvarIrfs(beta, sigma, nshock, hmax):
         Y[_in + tau - 1, :] = xT @ beta[1:, :] + (tau == 1) * (cholVCM @ vecshock).T
 
     irf = Y[_in:, :]
+
+    if structural:
+        irf = irf @ cholVCM.T
 
     return irf
 
@@ -3960,6 +3964,7 @@ def logMLVAR_formin_covid(par, y, x, lags, T, n, b, MIN, MAX, SS, Vc, pos, mn, s
 
     # Compute posterior mode of the VAR coefficients
     # Here omega is kx1, x'x is kxk, x'y is kxn, and b is kxn
+
     betahat = la.solve(x.T @ x + np.diag(1. / omega.ravel()), x.T @ y + np.diag(1. / omega.ravel()) @ b)
 
     # Compute VAR residuals
@@ -4406,7 +4411,7 @@ def parse_pv_pairs(default_params, pv_pairs):
     return params
 
 
-def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, vis=False, LW=1.5):
+def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, dot_color, line_color, vis=False, LW=1.5):
     """
     Plots the joint distribution in the center, with marginals on the side.
     This version also plots a version conditioning on a set of limits on the first variable.
@@ -4437,7 +4442,7 @@ def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, vis=False, LW=1.5):
     gridY2 = np.linspace(Y2Lim[0], Y2Lim[1], 100)
 
     # Plot data
-    ax.scatter(YY[:, 0], YY[:, 1], .001 * np.ones(YY[:, 0].shape), s=2.5, c='grey', alpha=.08)
+    ax.scatter(YY[:, 0], YY[:, 1], .001 * np.ones(YY[:, 0].shape), s=2.5, c=dot_color, alpha=.08)
     ax.set_xlim(Y1Lim)
     ax.set_ylim(Y2Lim)
 
@@ -4447,7 +4452,7 @@ def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, vis=False, LW=1.5):
     kernel = gaussian_kde(YY.T)
     Z = kernel(values)
     Z = Z.reshape(X.shape)
-    ax.contour(X, Y, Z, zdir='z', offset=-0.01, colors='k')
+    ax.contour(X, Y, Z, zdir='z', offset=-0.01, colors=line_color)
 
     # Plot conditionals
     if plotCond:
@@ -4463,8 +4468,8 @@ def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, vis=False, LW=1.5):
     # Plot unconditional marginals
     kde_Y1 = gaussian_kde(YY[:, 0])
     kde_Y2 = gaussian_kde(YY[:, 1])
-    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1(gridY1) / max(kde_Y1(gridY1)), lw=LW, color='k')
-    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2(gridY2) / max(kde_Y2(gridY2)), lw=LW, color='k')
+    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1(gridY1) / max(kde_Y1(gridY1)), lw=LW, color=line_color)
+    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2(gridY2) / max(kde_Y2(gridY2)), lw=LW, color=line_color)
 
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
@@ -4476,6 +4481,130 @@ def plot_joint_marginal(YY, Y1CondLim, xlab, ylab, vis=False, LW=1.5):
         plt.close()
 
     return fig, ax  # return the figure and axes objects
+
+
+def plot_joint_marginal_overlay2(YY_unc, YY_con, xlab, ylab, dot_color_unc='grey', line_color_unc='black',
+                                dot_color_con='lightcoral', line_color_con='red', LW=1.5, vis=False):
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.xaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+    ax.yaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+    ax.zaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+
+    # Limits
+    Y1Lim = np.quantile(np.concatenate([YY_unc[:, 0], YY_con[:, 0]]), [0, 1])
+    Y2Lim = np.quantile(np.concatenate([YY_unc[:, 1], YY_con[:, 1]]), [0, 1])
+    gridY1 = np.linspace(Y1Lim[0], Y1Lim[1], 100)
+    gridY2 = np.linspace(Y2Lim[0], Y2Lim[1], 100)
+    X, Y = np.meshgrid(gridY1, gridY2)
+
+    # UNCONDITIONAL
+    ax.scatter(YY_unc[:, 0], YY_unc[:, 1], .001 * np.ones(YY_unc[:, 0].shape), s=2.5, c=dot_color_unc, alpha=.08)
+    kernel_unc = gaussian_kde(YY_unc.T)
+    Z_unc = kernel_unc(np.vstack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    ax.contour(X, Y, Z_unc, zdir='z', offset=-0.01, colors=line_color_unc)
+
+    kde_Y1_unc = gaussian_kde(YY_unc[:, 0])
+    kde_Y2_unc = gaussian_kde(YY_unc[:, 1])
+    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1_unc(gridY1) / max(kde_Y1_unc(gridY1)), lw=LW, color=line_color_unc)
+    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2_unc(gridY2) / max(kde_Y2_unc(gridY2)), lw=LW, color=line_color_unc)
+
+    # CONDITIONAL
+    ax.scatter(YY_con[:, 0], YY_con[:, 1], .001 * np.ones(YY_con[:, 0].shape), s=2.5, c=dot_color_con, alpha=.08)
+    kernel_con = gaussian_kde(YY_con.T)
+    Z_con = kernel_con(np.vstack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    ax.contour(X, Y, Z_con, zdir='z', offset=-0.01, colors=line_color_con)
+
+    kde_Y1_con = gaussian_kde(YY_con[:, 0])
+    kde_Y2_con = gaussian_kde(YY_con[:, 1])
+    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1_con(gridY1) / max(kde_Y1_con(gridY1)), lw=LW, color=line_color_con)
+    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2_con(gridY2) / max(kde_Y2_con(gridY2)), lw=LW, color=line_color_con)
+
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_zlabel('Normalized')
+    ax.set_zlim(-0.01, 1)
+
+    if not vis:
+        plt.close()
+    return fig, ax
+
+
+# Updated version of the overlay plotting function with optional outlier clipping
+
+def plot_joint_marginal_overlay(
+    YY_unc, YY_con, xlab, ylab,
+    dot_color_unc='grey', line_color_unc='black',
+    dot_color_con='lightcoral', line_color_con='red',
+    LW=1.5, vis=False, clip=True, clip_bounds=(1, 99)
+):
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.stats import gaussian_kde
+
+    def clip_percentiles(YY, bounds):
+        lower, upper = bounds
+        x_low, x_high = np.percentile(YY[:, 0], [lower, upper])
+        y_low, y_high = np.percentile(YY[:, 1], [lower, upper])
+        return YY[
+            (YY[:, 0] >= x_low) & (YY[:, 0] <= x_high) &
+            (YY[:, 1] >= y_low) & (YY[:, 1] <= y_high)
+        ]
+
+    # Optionally clip outliers
+    if clip:
+        YY_unc = clip_percentiles(YY_unc, clip_bounds)
+        YY_con = clip_percentiles(YY_con, clip_bounds)
+
+    # Begin plotting
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.xaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+    ax.yaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+    ax.zaxis._axinfo['grid'].update({'color': 'lightgrey', 'linewidth': 0.5, 'linestyle': '--'})
+
+    # Axis limits
+    Y1_all = np.concatenate([YY_unc[:, 0], YY_con[:, 0]])
+    Y2_all = np.concatenate([YY_unc[:, 1], YY_con[:, 1]])
+    Y1Lim = np.quantile(Y1_all, [0, 1])
+    Y2Lim = np.quantile(Y2_all, [0, 1])
+
+    gridY1 = np.linspace(Y1Lim[0], Y1Lim[1], 100)
+    gridY2 = np.linspace(Y2Lim[0], Y2Lim[1], 100)
+    X, Y = np.meshgrid(gridY1, gridY2)
+
+    # UNCONDITIONAL
+    ax.scatter(YY_unc[:, 0], YY_unc[:, 1], .001 * np.ones(YY_unc.shape[0]), s=2.5, c=dot_color_unc, alpha=.08)
+    kde_unc = gaussian_kde(YY_unc.T)
+    Z_unc = kde_unc(np.vstack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    ax.contour(X, Y, Z_unc, zdir='z', offset=-0.01, colors=line_color_unc)
+
+    kde_Y1_unc = gaussian_kde(YY_unc[:, 0])
+    kde_Y2_unc = gaussian_kde(YY_unc[:, 1])
+    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1_unc(gridY1) / max(kde_Y1_unc(gridY1)), lw=LW, color=line_color_unc)
+    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2_unc(gridY2) / max(kde_Y2_unc(gridY2)), lw=LW, color=line_color_unc)
+
+    # CONDITIONAL
+    ax.scatter(YY_con[:, 0], YY_con[:, 1], .001 * np.ones(YY_con.shape[0]), s=2.5, c=dot_color_con, alpha=.08)
+    kde_con = gaussian_kde(YY_con.T)
+    Z_con = kde_con(np.vstack([X.ravel(), Y.ravel()])).reshape(X.shape)
+    ax.contour(X, Y, Z_con, zdir='z', offset=-0.01, colors=line_color_con)
+
+    kde_Y1_con = gaussian_kde(YY_con[:, 0])
+    kde_Y2_con = gaussian_kde(YY_con[:, 1])
+    ax.plot(gridY1, Y2Lim[1] * np.ones_like(gridY1), kde_Y1_con(gridY1) / max(kde_Y1_con(gridY1)), lw=LW, color=line_color_con)
+    ax.plot(Y1Lim[0] * np.ones_like(gridY2), gridY2, kde_Y2_con(gridY2) / max(kde_Y2_con(gridY2)), lw=LW, color=line_color_con)
+
+    ax.set_xlabel(xlab)
+    ax.set_ylabel(ylab)
+    ax.set_zlabel('Normalized')
+    ax.set_zlim(-0.01, 1)
+
+    if not vis:
+        plt.close()
+
+    return fig, ax
+
 
 
 def plot_weighted_joint_and_marginals(YY, wStar, xlab, ylab, vis=False, LW=1.5, Y0=None):
@@ -4811,7 +4940,7 @@ def set_priors(y, lags, **kwargs):
 
     Examples:
         >>> some_kwargs = {'hyperpriors': 1, 'Vc': 10e6}
-        >>> r, mode, sd, priorcoef, MIN, MAX, var_info = set_priors_covid(**some_kwargs)
+        >>> r, mode, sd, priorcoef, MIN, MAX, var_info = set_priors(**some_kwargs)
         >>> # Now, r, mode, sd, priorcoef, MIN, MAX, and var_info can be used in the bvarGLP_covid function
     """
 
@@ -5468,60 +5597,3 @@ def verify_bvar_results(bvar_results):
     return bvar_results
 
 
-def write_tex_sidewaystable(fid, header, style, table_body, above_tabular, below_tabular=None):
-    """
-    Writes a LaTeX sidewaystable to the given file identifier or prints it to the screen.
-
-    Args:
-        fid (file object): File identifier obtained by opening the file in write mode. Can be None to print to the screen.
-        header (list of str): List of column titles/headers for the table.
-        style (str): LaTeX style for the columns, such as 'r|cccc' or 'l|rr|rr|'.
-        table_body (list of list): Nested list or cell matrix of table content to write. Can include text, numbers, NaN, or empty values.
-        above_tabular (str or list of str): Text to write between '\\begin{table}' and '\\begin{tabular}{style}'. Can be a string or a list of strings.
-        below_tabular (str or list of str, optional): Text to write between '\\end{tabular}' and '\\end{table}'. Can be a string or a list of strings.
-
-    Example:
-        >>> with open('file.tex', 'w') as fid:
-                row_names = ['row1', 'row2', 'row3']
-                data = [[1.23, 4.56, 7.89], [0.12, 3.45, 6.78], [9.01, 2.34, 5.67]]
-                header = ['col1', 'col2', 'col3']
-                table_data = [row_names, data]
-                style = 'r|ccc'
-                above_tabular = 'Random Numbers'
-                write_tex_sidewaystable(fid, header, style, table_data, above_tabular)
-    """
-
-    def fmt(x):
-        if isinstance(x, (int, float)):
-            if abs(x) < 1:
-                return f"{x:.3f}"
-            elif abs(x) < 10:
-                return f"{x:.2f}"
-            else:
-                return f"{x:.1f}"
-        elif x == "":
-            return ""
-        else:
-            return str(x).replace('&', '\\&')
-
-    writeline = lambda s: print(s, file=fid)
-    writerow = lambda rowcell: writeline(' & '.join(rowcell) + ' \\\\')
-    write_cell = lambda to_write: [writeline(fmt(txt)) for txt in to_write]
-    write_string_cell = lambda to_write: write_cell([to_write]) if isinstance(to_write, str) else write_cell(to_write)
-
-    writeline('\\begin{sidewaystable}[htpb!]')
-    if above_tabular:
-        write_string_cell(above_tabular)
-    writeline('\\centering')
-    writeline(f'\\begin{{tabular}}{{{style}}}')  # Escaping the curly braces
-
-    writerow(header)
-    for row in table_body:
-        writerow([fmt(cell) for cell in row])
-
-    writeline('\\hline')
-    writeline('\\end{tabular}')
-    if below_tabular:
-        write_string_cell(below_tabular)
-    writeline('\\end{sidewaystable}')
-    writeline('')

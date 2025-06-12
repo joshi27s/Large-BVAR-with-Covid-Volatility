@@ -10,7 +10,7 @@
 `covbayesvar` is a Python package designed to estimate large Bayesian Vector Autoregressive (BVAR) models, incorporating COVID-induced volatility. 
 It is a tool to forecast monthly and quarterly macroeconomic and financial data, leveraging advanced econometric methods to address 
 the unique challenges posed by extreme observations and structural shifts during the pandemic. 
-The package contains python functions which are translated one-to-one with the MATLAB
+The package contains python functions which are translated one-to-one with the publically-available MATLAB
 counterparts, where they were originally written in. 
 
 This package facilitates various tasks, including:
@@ -266,6 +266,6 @@ a bug, suggesting an improvement, to forking the repository and creating a pull 
 This package, accompanying research paper, codes and supplementary materials are
 not affiliated with, endorsed from or sponsored by Amazon.com, its subsidiaries 
 or its employees. I independently wrote the functions of the package for 
-research purposes before joining Amazon.com. Prior to my internship at Amazon,
+research purposes before joining Amazon.com. Prior to my employment at Amazon,
 I had mapped the python functions one-to-one with the publicly-available MATLAB
 functions. I am solely responsible for any omissions or errors. 
