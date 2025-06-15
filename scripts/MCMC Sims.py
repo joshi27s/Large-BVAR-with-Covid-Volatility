@@ -2,6 +2,8 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
 import covbayesvar.large_bvar as bvar
 import pandas as pd
 

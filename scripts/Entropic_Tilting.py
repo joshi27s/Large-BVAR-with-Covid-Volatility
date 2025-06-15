@@ -5,6 +5,8 @@ import numpy as np
 import os
 import pickle
 import sys
+import warnings
+warnings.filterwarnings("ignore")
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates

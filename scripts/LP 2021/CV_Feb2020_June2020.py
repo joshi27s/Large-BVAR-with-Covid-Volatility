@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import os
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
 import covbayesvar.large_bvar as bvar
 #import large_bvar as bvar
 

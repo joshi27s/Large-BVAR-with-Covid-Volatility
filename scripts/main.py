@@ -11,6 +11,8 @@ import matplotlib.dates as mdates
 from matplotlib.ticker import MaxNLocator
 import seaborn as sns
 from PIL import Image
+import warnings
+warnings.filterwarnings("ignore")
 import covbayesvar.large_bvar as bvar
 #import large_bvar as bvar
 
@@ -320,6 +322,8 @@ if plot_joint_uncondi_forecasts:
     fore_series = pd.to_datetime(fore)
     yfore = fore_series.year
     mfore = fore_series.month
+    line_color = 'k'  # Red color for conditional
+    dot_color = 'grey'
 
     # Estimate the model until October 1, 2024
     # Extract dates corresponding to October
@@ -363,7 +367,7 @@ if plot_joint_uncondi_forecasts:
             YY = np.column_stack((Y1, Y2))
 
             # Generate scatterplot of draws, with marginals on the side panels
-            fig, ax = bvar.plot_joint_marginal(YY, None, y1lab, y2lab, vis, LW)
+            fig, ax = bvar.plot_joint_marginal(YY, None, y1lab, y2lab, dot_color, line_color, vis, LW)
             t_datetime = pd.to_datetime(t, format='%d-%b-%Y')
             title_string = f"{t_datetime.strftime('%Y:%m')} | {dates.iloc[-1].strftime('%Y:%m')}"
             ax.set_title(title_string)

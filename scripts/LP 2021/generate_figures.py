@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import covbayesvar.large_bvar as bvar
 from matplotlib.lines import Line2D
 import pickle
+import warnings
+warnings.filterwarnings("ignore")
 import numpy as np
 
 # Define the results folder
